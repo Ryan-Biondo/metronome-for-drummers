@@ -16,8 +16,9 @@ import useMetronomeStore from '../store';
 //     }
 // }
 
-export default function AudioLoader(urls: string[], context: AudioContext) {
-    const {setBuffers} = useMetronomeStore();
+export default function AudioLoader() {
+    const {setBuffers, urls} = useMetronomeStore();
+    const context = new AudioContext;
     const promises:Promise<AudioBuffer>[] = urls.map((url: string) =>
         fetch(url)
         .then((res: Response) => res.arrayBuffer())
