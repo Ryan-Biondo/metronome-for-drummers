@@ -5,6 +5,7 @@ interface MetronomeState {
     beatsPerMeasure: number;
     isPlaying: boolean;
     buffers: Array<object>;
+    urls: Array<string>
     setBPM: (newBPM: number) => void;
     setBeats: (newBeats: number) => void;
     togglePlay: () => void;
@@ -16,6 +17,7 @@ interface MetronomeState {
     beatsPerMeasure: 4,
     isPlaying: false,
     buffers: [],
+    urls: [],
     setBPM: (newBPM) => set({ bpm: newBPM }),
     setBeats: (newBeats) => set({ beatsPerMeasure: newBeats }),
     togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
