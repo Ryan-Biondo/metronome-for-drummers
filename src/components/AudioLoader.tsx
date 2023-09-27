@@ -16,7 +16,7 @@
 //     }
 // }
 
- function AudioLoader (setBuffers: Function, urls:string[]) {
+ function AudioLoader (setBuffers: (buffers: AudioBuffer[]) => void, urls:string[]) {
     const context = new AudioContext
     const promises:Promise<AudioBuffer>[] = urls.map((url: string) =>
         fetch(url)

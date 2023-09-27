@@ -1,8 +1,9 @@
-import { useState } from 'react';
 import AudioLoader from './AudioLoader';
+import {useEffect} from 'react';
 import useMetronomeStore from '../store';
-export default function MetronomeSound () {
+ const MetronomeSound = () => {
     const {isPlaying, setBPM, bpm, buffers, setBuffers, urls, soundNum, setStartTime, nextStart, setNextStart} = useMetronomeStore();
+
     AudioLoader(setBuffers, urls);
     const audioContext = new AudioContext
     // private soundFiles: AudioLoader
@@ -24,18 +25,33 @@ export default function MetronomeSound () {
         setStartTime(nextStart)
         setBPM(bpm)
         const bufIndex = soundNum - 1
+        const newSource = audioContext.createBufferSource();  
         if (bufIndex >= buffers.length) {
             alert('Sound files are not yet loaded')
         } else if (bpm) {
-            setNextStart(nextStart += 60 / bpm)
-            if (source) {
-                const selectedBuffer: AudioBuffer = buffers[bufIndex]
-               source.buffer = (selectedBuffer)
-               source.connect(audioContext.destination)
-               source.onended = () => schedule()
-               source.start(nextStart)
+            const newNextStart = nextStart + 60 / bpm;
+            setNextStart(newNextStart);
+        const selectedBuffer: AudioBuffer = buffers[bufIndex];
+        newSource.buffer = selectedBuffer;  // Use new instance
+        newSource.connect(audioContext.destination);
+        newSource.onended = () => schedule();
+        newSource.start(nextStart);  // Call start on the new instance
             }
         }
-    }
-    schedule();
+        useEffect(() => {
+            if (isPlaying) {
+                schedule();
+            } else {
+                stopPlaying();
+            }
+    
+            // Cleanup logic if needed
+            return () => {
+                stopPlaying();
+            };
+        }, [isPlaying, bpm]);
+      return null
 }
+
+
+export default MetronomeSound
