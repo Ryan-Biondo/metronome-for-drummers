@@ -1,19 +1,13 @@
 import BeatsControl from './BeatsControl';
 import BpmControl from './BpmControl';
 import ControlButtons from './ControlButtons';
+// import MetronomeSound from './MetronomeSound';
+// import SnareSound from './audio/snare-drum-808-3.wav'
+import useMetronomeStore from '../store';
 
 const Metronome = () => {
-
-  const MetSound = [SnareSound];
-
-  let startTime = 0;
-  let tempoBpm = 60;
-  const sound = new MetronomeSound('./', MetSound, {
-      setTempo: (t: number) => tempoBpm = t,
-      setStartTime: (s: number) => startTime = s
-  })
-
-  console.log(sound, startTime, tempoBpm)
+  const {buffers} = useMetronomeStore();
+  console.log(buffers)
   return (
     <>
       <div className="app-container">
@@ -21,7 +15,7 @@ const Metronome = () => {
           <BpmControl />
         </div>
         <div className="control-section">
-          <ControlButtons sound={sound} />
+          <ControlButtons />
         </div>
         <div className="control-section">
           <BeatsControl />
