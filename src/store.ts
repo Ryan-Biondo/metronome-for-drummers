@@ -19,6 +19,8 @@ interface MetronomeState {
     nextStart:  number;
     setNextStart:  (newStartNum: number) => void;
     startTime: number;
+    isLoaded: boolean;
+    setIsLoaded: () => void;
 
   }
   
@@ -26,12 +28,14 @@ interface MetronomeState {
     bpm: 120,
     beatsPerMeasure: 4,
     isPlaying: false,
+    isLoaded: false,
     buffers: [],
     urls: [SnareSound, SnareSound],
     startNum: 0,
-    soundNum: 0,
-    nextStart: 1,
+    soundNum: 1,
+    nextStart: 0,
     startTime: 0,
+    setIsLoaded: () => set((state) => ({isLoaded: !state.isLoaded})),
     setStartTime: (newStartTime) => set({startTime: newStartTime}),
     setNextStart: (newNextStart) => set({nextStart : newNextStart}),
     setBPM: (newBPM) => set({ bpm: newBPM }),
