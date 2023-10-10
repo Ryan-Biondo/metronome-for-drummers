@@ -17,28 +17,26 @@
 // }
 
 function AudioLoader(
-    setBuffers: (buffers: AudioBuffer[]) => void,
-    urls: string[],
-    setIsLoaded: (status: boolean) => void
+    setBuffers: (buffers: AudioBuffer[]) => void, 
+    urls: string[]
   ): Promise<boolean> {
     const context = new AudioContext();
   
-    const promises: Promise<AudioBuffer>[] = urls.map((url: string) =>
+    // Map each URL to a promise that fetches and decodes the audio data
+    const promises = urls.map((url) =>
       fetch(url)
-        .then((res: Response) => res.arrayBuffer())
-        .then((arrayBuffer: ArrayBuffer) => context.decodeAudioData(arrayBuffer))
+        .then((res) => res.arrayBuffer())
+        .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
     );
   
     return Promise.all(promises)
-      .then((buffers: AudioBuffer[]) => {
-        setBuffers(buffers);
-        setIsLoaded(true);  // Set isLoaded to true here.
-        return true;  // This will resolve the outer promise to true.
+      .then((buffers) => {
+        setBuffers(buffers); // Set the buffers in the store
+        return true;  // Successfully loaded all audio files
       })
-      .catch(err => {
-        console.error(err);
-        setIsLoaded(false);  // If there's an error, ensure isLoaded is set to false.
-        return false;  // This will resolve the outer promise to false.
+      .catch((err) => {
+        console.error("Error loading audio files:", err);
+        return false;  // Failed to load all audio files
       });
   }
   

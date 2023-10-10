@@ -25,7 +25,7 @@ interface MetronomeState {
   }
   
   const useMetronomeStore = create<MetronomeState>((set) => ({
-    bpm: 120,
+    bpm: 78,
     beatsPerMeasure: 4,
     isPlaying: false,
     isLoaded: false,
@@ -40,7 +40,10 @@ interface MetronomeState {
     setNextStart: (newNextStart) => set({nextStart : newNextStart}),
     setBPM: (newBPM) => set({ bpm: newBPM }),
     setBeats: (newBeats) => set({ beatsPerMeasure: newBeats }),
-    togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
+    togglePlay:() => set((state) => {
+      console.log("Toggling play from:", state.isPlaying, "to:", !state.isPlaying);
+      return { isPlaying: !state.isPlaying };
+  }),
     setBuffers: (newBuffers) => set({ buffers: newBuffers}),
     AudioLoader: AudioLoader
   }));
