@@ -27,7 +27,7 @@ const MetronomeSound: React.FC<MetronomeSoundProps> =  ({ isPlaying }) => {
           const newSource = audioContextRef.current.createBufferSource();
           newSource.buffer = buffers[bufIndex];
           newSource.connect(audioContextRef.current.destination);
-          newSource.start();
+          newSource.start()
           currentSourceRef.current = newSource;
     }
 

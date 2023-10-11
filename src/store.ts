@@ -25,7 +25,7 @@ interface MetronomeState {
   }
   
   const useMetronomeStore = create<MetronomeState>((set) => ({
-    bpm: 78,
+    bpm: 200,
     beatsPerMeasure: 4,
     isPlaying: false,
     isLoaded: false,
