@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import SnareSound from './components/audio/snare-drum-808-3.wav'
+import HiHatSound from './components/audio/short-open-hi-hat.wav'
 import AudioLoader from './components/AudioLoader';
 
 interface MetronomeState {
@@ -7,7 +8,8 @@ interface MetronomeState {
     beatsPerMeasure: number;
     isPlaying: boolean;
     buffers: AudioBuffer[];
-    urls: Array<string>
+    urls: Array<string>;
+    subdivision: number;
     setBPM: (newBPM: number) => void;
     setBeats: (newBeats: number) => void;
     togglePlay: () => void;
@@ -21,16 +23,21 @@ interface MetronomeState {
     startTime: number;
     isLoaded: boolean;
     setIsLoaded: () => void;
+    currentBeat: number;
+    setCurrentBeat:  (newBeat: number) => void;
 
   }
   
   const useMetronomeStore = create<MetronomeState>((set) => ({
     bpm: 200,
+    subdivision: 2,
+    currentBeat: 1,
+    setCurrentBeat: (newBeat: number) => set({ currentBeat: newBeat }),
     beatsPerMeasure: 4,
     isPlaying: false,
     isLoaded: false,
     buffers: [],
-    urls: [SnareSound, SnareSound],
+    urls: [SnareSound, HiHatSound],
     startNum: 0,
     soundNum: 1,
     nextStart: 0,
