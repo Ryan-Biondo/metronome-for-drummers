@@ -25,12 +25,17 @@ interface MetronomeState {
     setIsLoaded: () => void;
     currentBeat: number;
     setCurrentBeat:  (newBeat: number) => void;
-
+    audioContext: AudioContext; // Add audioContext here
+    shouldDelay: boolean;
+    setShouldDelay: (newVal: boolean) => void;
   }
   
   const useMetronomeStore = create<MetronomeState>((set) => ({
-    bpm: 200,
-    subdivision: 2,
+    audioContext: new AudioContext(), // Add audioContext here
+    shouldDelay: false,
+    setShouldDelay: (value: boolean) => set({ shouldDelay: value }),
+    bpm: 120,
+    subdivision: 3,
     currentBeat: 1,
     setCurrentBeat: (newBeat: number) => set({ currentBeat: newBeat }),
     beatsPerMeasure: 4,
