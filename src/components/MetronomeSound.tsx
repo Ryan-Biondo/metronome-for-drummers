@@ -1,66 +1,53 @@
-import { useEffect, useRef, useState } from 'react';
-import useMetronomeStore from '../store'; // Assuming this is the correct import path for your store
+import React, { useEffect } from 'react';
+import useMetronomeStore from '../store';
+import SubdivisionSound from './SubdivisionSound';
 
 interface MetronomeSoundProps {
-    isPlaying: boolean;
-
+  isPlaying: boolean;
 }
-const MetronomeSound: React.FC<MetronomeSoundProps> =  ({ isPlaying}) => {
-    const audioContextRef = useRef(new AudioContext());
-    const currentSourceRef = useRef<AudioNode | null>(null); // Updated type to AudioNode
-    const { bpm, buffers, soundNum, currentBeat, setCurrentBeat, beatsPerMeasure, subdivision } = useMetronomeStore();
-    
-    const interval = 60 / (bpm * subdivision);
-    const [localBeat, setLocalBeat] = useState(0); // Local state to keep track of the current beat
 
+const MetronomeSound: React.FC<MetronomeSoundProps> = ({ isPlaying }) => {
+  const { bpm, buffers, audioContext, shouldDelay, setShouldDelay } =
+    useMetronomeStore();
 
-
-    function playSound() {
-
-        if (currentSourceRef.current) {
-            currentSourceRef.current.disconnect();
-          }
-
-    //       for(let i=1; i<= beatsPerMeasure; i++){
-    //         console.log(i)
-    // }
-
-        
-          let bufIndex = soundNum - 1;
-          if (bufIndex >= buffers.length) {
-            alert('Sound files are not yet loaded');
-            return;
-          }
-          const newBeat = (localBeat % beatsPerMeasure) + 1;
-          setLocalBeat(newBeat); // Update the local state, not the global state
-          console.log('Current Beat:', newBeat);
-
-          if(newBeat == 1) {
-             bufIndex = soundNum - 1;
-          } 
-          else{
-            bufIndex = soundNum;
-          }
-
-   
-
-        
-          const newSource = audioContextRef.current.createBufferSource();
-          newSource.buffer = buffers[bufIndex];
-          newSource.connect(audioContextRef.current.destination);
-          newSource.start();
-          currentSourceRef.current = newSource;
-
+  useEffect(() => {
+    if (isPlaying) {
+      setShouldDelay(true);
+      const delayTimer = setTimeout(() => {
+        setShouldDelay(false);
+      }, 300);
+      return () => clearTimeout(delayTimer);
     }
-    useEffect(() => {
-        if (isPlaying) {
-          setCurrentBeat(localBeat); // Update the global state when isPlaying changes
-          const metronome = setInterval(playSound, interval * 1000);
-          return () => clearInterval(metronome);
-        }
-      }, [bpm, isPlaying, localBeat, setCurrentBeat, subdivision]);
-    
-      return null;
-    };
+  }, [bpm]);
 
-export default MetronomeSound
+  useEffect(() => {
+    let timer: number;
+    if (isPlaying && !shouldDelay) {
+      const playMainBeat = () => {
+        if (buffers[0]) {
+          const newSource = audioContext.createBufferSource();
+          newSource.buffer = buffers[0];
+          newSource.connect(audioContext.destination);
+          newSource.start();
+        }
+      };
+
+      playMainBeat();
+      timer = window.setInterval(playMainBeat, 60000 / bpm);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [bpm, isPlaying, shouldDelay]);
+
+  return (
+    <>
+      {isPlaying && (
+        <SubdivisionSound isPlaying={isPlaying} audioContext={audioContext} />
+      )}
+    </>
+  );
+};
+
+export default MetronomeSound;
