@@ -4,61 +4,75 @@ import HiHatSound from './components/audio/short-open-hi-hat.wav'
 import AudioLoader from './components/AudioLoader';
 
 interface MetronomeState {
-    bpm: number;
-    beatsPerMeasure: number;
-    isPlaying: boolean;
-    buffers: AudioBuffer[];
-    urls: Array<string>;
-    subdivision: number;
-    setBPM: (newBPM: number) => void;
-    setBeats: (newBeats: number) => void;
-    togglePlay: () => void;
-    setBuffers: (newBuffers: AudioBuffer[]) => void;
-    AudioLoader : typeof AudioLoader;
-    startNum: number;
-    setStartTime: (newStartTime: number) => void;
-    soundNum: number;
-    nextStart:  number;
-    setNextStart:  (newStartNum: number) => void;
-    startTime: number;
-    isLoaded: boolean;
-    setIsLoaded: () => void;
-    currentBeat: number;
-    setCurrentBeat:  (newBeat: number) => void;
-    audioContext: AudioContext; // Add audioContext here
-    shouldDelay: boolean;
-    setShouldDelay: (newVal: boolean) => void;
-  }
+  // Audio context
+  audioContext: AudioContext;
   
-  const useMetronomeStore = create<MetronomeState>((set) => ({
-    audioContext: new AudioContext(), // Add audioContext here
-    shouldDelay: false,
-    setShouldDelay: (value: boolean) => set({ shouldDelay: value }),
-    bpm: 120,
-    subdivision: 3,
-    currentBeat: 1,
-    setCurrentBeat: (newBeat: number) => set({ currentBeat: newBeat }),
-    beatsPerMeasure: 4,
-    isPlaying: false,
-    isLoaded: false,
-    buffers: [],
-    urls: [SnareSound, HiHatSound],
-    startNum: 0,
-    soundNum: 1,
-    nextStart: 0,
-    startTime: 0,
-    setIsLoaded: () => set((state) => ({isLoaded: !state.isLoaded})),
-    setStartTime: (newStartTime) => set({startTime: newStartTime}),
-    setNextStart: (newNextStart) => set({nextStart : newNextStart}),
-    setBPM: (newBPM) => set({ bpm: newBPM }),
-    setBeats: (newBeats) => set({ beatsPerMeasure: newBeats }),
-    togglePlay:() => set((state) => {
-      console.log("Toggling play from:", state.isPlaying, "to:", !state.isPlaying);
-      return { isPlaying: !state.isPlaying };
-  }),
-    setBuffers: (newBuffers) => set({ buffers: newBuffers}),
-    AudioLoader: AudioLoader
-  }));
+  // Playback
+  isPlaying: boolean;
+  shouldDelay: boolean;
+  togglePlay: () => void;
+  setShouldDelay: (newVal: boolean) => void;
   
-  export default useMetronomeStore;
+  // Timing
+  bpm: number;
+  subdivision: number;
+  beatsPerMeasure: number;
+  setBPM: (newBPM: number) => void;
+  setBeats: (newBeats: number) => void;
   
+  // Sound
+  buffers: AudioBuffer[];
+  urls: Array<string>;
+  setBuffers: (newBuffers: AudioBuffer[]) => void;
+  AudioLoader: typeof AudioLoader;
+  isLoaded: boolean;
+  setIsLoaded: () => void;
+  
+  // Current state
+  currentBeat: number;
+  startNum: number;
+  soundNum: number;
+  nextStart: number;
+  startTime: number;
+  setCurrentBeat: (newBeat: number) => void;
+  setStartTime: (newStartTime: number) => void;
+  setNextStart: (newStartNum: number) => void;
+}
+
+const useMetronomeStore = create<MetronomeState>((set) => ({
+  // Audio context
+  audioContext: new AudioContext(),
+  
+  // Playback
+  isPlaying: false,
+  shouldDelay: false,
+  togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
+  setShouldDelay: (value: boolean) => set({ shouldDelay: value }),
+  
+  // Timing
+  bpm: 120,
+  subdivision: 3,
+  beatsPerMeasure: 4,
+  setBPM: (newBPM) => set({ bpm: newBPM }),
+  setBeats: (newBeats) => set({ beatsPerMeasure: newBeats }),
+  
+  // Sound
+  buffers: [],
+  urls: [SnareSound, HiHatSound],
+  setBuffers: (newBuffers) => set({ buffers: newBuffers }),
+  AudioLoader: AudioLoader,
+  isLoaded: false,
+  setIsLoaded: () => set((state) => ({ isLoaded: !state.isLoaded })),
+  
+  // Current state
+  currentBeat: 1,
+  startNum: 0,
+  soundNum: 1,
+  nextStart: 0,
+  startTime: 0,
+  setCurrentBeat: (newBeat) => set({ currentBeat: newBeat }),
+  setStartTime: (newStartTime) => set({ startTime: newStartTime }),
+  setNextStart: (newNextStart) => set({ nextStart: newNextStart }),
+}));
+
+export default useMetronomeStore;
